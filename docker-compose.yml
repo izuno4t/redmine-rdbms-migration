@@ -16,7 +16,7 @@ services:
       - ./docker/mysql/conf.d:/etc/mysql/conf.d
       - ./log/mysql:/var/log/mysql
   postgresql:
-    build: ./docker/postgresql
+    build: ./docker/postgres
     restart: always
     environment:
       TZ: Asia/Tokyo
