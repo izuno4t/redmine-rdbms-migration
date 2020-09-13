@@ -19,6 +19,29 @@ Redmine の RDBMS を MySQL から PostgreSQL に変更する
 mysql -h 127.0.0.1  -u root -p < mysqldump_20200XXXXXXXXX
 ```
 
+### Rails セットアップ
+
+```bash
+$ wget https://www.redmine.org/releases/redmine-3.4.5.tar.gz
+$ tar zxvf redmine-3.4.5.tar.gz
+$ cd redmine-3.4.5
+$ cp config/database.yml.example configdatabase.yml
+$ vi config
+$ bundle install
+```
+
+### yaml_db
+
+- yaml_db は移行元と移行先が同じスキーマでないとだめ
+- Rails を長期間つかっていると、プライグインの追加・削除等あるため、使用していないテーブルが残った状態になっている→つまり使えない
+
+```console
+RAILS_ENV=production rake db:migrate
+RAILS_ENV=production rake db:data:dump 
+```
+
+
+
 ## 参照先
 
 - [RedmineのデータベースをMySQLからPostgreSQLへ移行した](https://qiita.com/ryouma_nagare/items/c4ba5298dd283333bb85)
