@@ -34,13 +34,14 @@ $ bundle install
 
 - yaml_db は移行元と移行先が同じスキーマでないとだめ
 - Rails を長期間つかっていると、プライグインの追加・削除等あるため、使用していないテーブルが残った状態になっている→つまり使えない
+- [PostgreSQL 10 : Each sequence does not have `increment_by` column, need to use `pg_sequences`](https://github.com/rails/rails/issues/28780)が発生するので、PostgreSQLを9.6に変更
 
 ```console
-RAILS_ENV=production rake db:migrate
-RAILS_ENV=production rake db:data:dump
+$ RAILS_ENV=production rake db:migrate
+$ RAILS_ENV=production rake db:data:dump
+$ vi config/database.yml
+RAILS_ENV=production rake db:data:load
 ```
-
-
 
 ## 参照先
 
