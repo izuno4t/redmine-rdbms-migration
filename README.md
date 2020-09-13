@@ -37,7 +37,7 @@ $ bundle install
 
 ```console
 RAILS_ENV=production rake db:migrate
-RAILS_ENV=production rake db:data:dump 
+RAILS_ENV=production rake db:data:dump
 ```
 
 
