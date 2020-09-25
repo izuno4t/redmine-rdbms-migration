@@ -9,7 +9,12 @@ Redmine の RDBMS を MySQL から PostgreSQL に変更する
 - 移行環境は PostgreSQL 12
 - 現行データは1日1回 mysqldump にてダンプファイルを作成
   
-## 移行手段
+## 移行戦略
+
+1. MySQLからデータ出力
+2. スキーマ定義を MySQL から PostgreSQL へ移行
+   - `rak db:schem:dump` で MySQL の定義を出力
+   - `rak db:schem:load` で PostgreSQL に定義を生成
 
 ## プロセス
 
@@ -40,8 +45,24 @@ $ bundle install
 $ RAILS_ENV=production rake db:migrate
 $ RAILS_ENV=production rake db:data:dump
 $ vi config/database.yml
-RAILS_ENV=production rake db:data:load
+$ RAILS_ENV=production rake db:data:load
 ```
+
+### テーブルの掃除
+
+※ 残ってる不要なテーブルおよびデータ削除
+
+```sql
+DROP TABLE chart_done_ratios_20121107;
+DROP TABLE chart_issue_statuses_20121107;
+DROP TABLE chart_saved_conditions_20121107;
+DROP TABLE chart_time_entries_20121107;
+DROP TABLE work_kb_articles;
+DROP TABLE work_kb_categories;
+DROP TABLE work_ratings;
+DROP TABLE work_viewings;
+```
+
 
 ## 参照先
 
