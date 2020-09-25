@@ -1,0 +1,4 @@
+load database
+    from mysql://root:redmine@127.0.0.1/redmine
+    into pgsql://redmine:redmine@localhost/redmine
+    alter schema 'redmine' rename to 'public';

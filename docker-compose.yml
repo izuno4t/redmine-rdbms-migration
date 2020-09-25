@@ -16,7 +16,7 @@ services:
       - ./docker/mysql/conf.d:/etc/mysql/conf.d
       - ./log/mysql:/var/log/mysql
   postgresql:
-    build: ./docker/postgres96
+    build: ./docker/postgres
     restart: always
     environment:
       TZ: Asia/Tokyo
@@ -28,6 +28,6 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - ./docker/postgres96/initdb.d:/docker-entrypoint-initdb.d
-      - ./docker/postgres96/conf.d:/etc/postgresql
+      - ./docker/postgres/initdb.d:/docker-entrypoint-initdb.d
+      - ./docker/postgres/conf.d:/etc/postgresql
       - ./log/postgres:/var/log/postgresql
