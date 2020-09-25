@@ -55,9 +55,12 @@ DROP TABLE work_viewings;
 
 ### yaml_db
 
-- yaml_db は移行元と移行先が同じスキーマでないとだめ
-- Rails を長期間つかっていると、プライグインの追加・削除等あるため、使用していないテーブルが残った状態になっている→つまり使えない
-- [PostgreSQL 10 : Each sequence does not have `increment_by` column, need to use `pg_sequences`](https://github.com/rails/rails/issues/28780)が発生するので、PostgreSQLを9.6に変更
+#### セットアップ
+
+GitHubからダウンロードしてきてRedmineのpluginに追加するだけ。
+実施時のバージョンは`0.7.0`
+
+#### 実施と結果
 
 ```console
 RAILS_ENV=production rake db:migrate
@@ -65,6 +68,10 @@ RAILS_ENV=production rake db:data:dump
 vi config/database.yml
 RAILS_ENV=production rake db:data:load
 ```
+
+- yaml_db は移行元と移行先が同じスキーマ定義でないとだめ
+- Rails を長期間つかっていると、プライグインの追加・削除等あるため、使用していないテーブルが残った状態になっている→つまり使えない
+- [PostgreSQL 10 : Each sequence does not have `increment_by` column, need to use `pg_sequences`](https://github.com/rails/rails/issues/28780)が発生するので、PostgreSQLを9.6以下にしないとこのバージョンでは上手く動かない
 
 ### pg_loader
 
@@ -75,10 +82,23 @@ Redmine のプラグインでは上手く移行できないため、Redmine に�
 [pg_loader](https://pgloader.io/) を [brew](https://formulae.brew.sh/formula/pgloader) でセットアップ
 
 ```console
-brew reinstall pgloader
+$ brew reinstall pgloader
+$ pgloader -V
+pgloader version "3.6.2"
+compiled with SBCL 2.0.2
 ```
 
-コマンド実行
+移行元と移行先の設定を行う
+
+```bash
+$ cat pgloader/commands.load
+load database
+    from mysql://root:redmine@127.0.0.1/redmine
+    into pgsql://redmine:redmine@localhost/redmine
+    alter schema 'redmine' rename to 'public';
+```
+
+#### 実施と結果
 
 ```console
 $ pgloader ./pgloader/commands.load
@@ -244,4 +264,4 @@ Remdmine から接続しても問題なく稼働している。
 - [Redmineで使うデータベースを変更する](http://blog.redmine.jp/articles/change-database/)
 - [［Redmine］Redmineのマイグレーションを行う](https://daybreaksnow.hatenablog.jp/entry/2016/12/11/145403)
 - [pgloader 3.4.1でMySQLからPostgreSQLへスマートに移行しよう（翻訳）](https://techracho.bpsinc.jp/hachi8833/2017_07_20/43380)
-- 
+- [pgloaderでMySQL→Postgresへの移行を行う](https://qiita.com/11ohina017/items/4a808e4fc03e1ac890ba)
