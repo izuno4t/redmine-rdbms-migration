@@ -91,7 +91,7 @@ compiled with SBCL 2.0.2
 移行元と移行先の設定を行う
 
 ```bash
-$ cat pgloader/commands.load
+$ cat config/commands.load
 load database
     from mysql://root:redmine@127.0.0.1/redmine
     into pgsql://redmine:redmine@localhost/redmine
@@ -101,7 +101,7 @@ load database
 #### 実施と結果
 
 ```console
-$ pgloader ./pgloader/commands.load
+$ pgloader ./config/commands.load
 2020-09-26T00:06:00.009000+01:00 LOG pgloader version "3.6.2"
 2020-09-26T00:06:00.153000+01:00 LOG Migrating from #<MYSQL-CONNECTION mysql://root@127.0.0.1:3306/redmine {1005C2F7F3}>
 2020-09-26T00:06:00.153000+01:00 LOG Migrating into #<PGSQL-CONNECTION pgsql://redmine@localhost:5432/redmine {1005C30EE3}>
@@ -256,6 +256,29 @@ public.open_id_authentication_associations          0          0                
 
 インデックス名が一部切り捨てられているが、意外とすんなり成功した。
 Remdmine から接続しても問題なく稼働している。
+
+### pg_loader by Docker
+
+[dimitri/pgloader](https://hub.docker.com/r/dimitri/pgloader/)のイメージを使用する。
+ソースコードは[こちら](https://github.com/dimitri/pgloader)
+
+移行元と移行先の設定を行う
+
+```bash
+$ cat pgloader/config.load
+load database
+    from mysql://redmine:redmine@localhost/redmine
+    into pgsql://redmine:redmine@localhost/redmine
+    alter schema 'redmine' rename to 'public';
+```
+
+以下で実行する。
+
+```bash
+$ docker run --rm --net="host" --name pgloader -v $(pwd)/config.load:/tmp/config.load dimitri/pgloader:latest pgloader --dry-run /tmp/config.load
+```
+
+
 
 ## 参照先
 
